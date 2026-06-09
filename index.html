@@ -2,6 +2,47 @@
 <html>
 <head>
     <title>Ambition Game</title>
+    <style>
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    animation: bg 10s ease infinite;
+    background: linear-gradient(to right, red, blue) !important;
+    background-size: 400% 400%;
+    animation: bg 10s ease infinite;
+    color: white;
+}
+
+@keyframes bg {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
+
+h1, p, h2 {
+    text-shadow: 2px 2px 5px black;
+}
+
+input {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+}
+
+button {
+    padding: 10px 15px;
+    margin-left: 10px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+</style>
 </head>
 <body>
 
