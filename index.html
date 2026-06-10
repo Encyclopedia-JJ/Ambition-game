@@ -11,20 +11,11 @@ body {
     justify-content: center;
     align-items: center;
     font-family: Arial, sans-serif;
-    animation: bg 10s ease infinite;
-    background: linear-gradient(to right, red, blue) !important;
-    background-size: 400% 400%;
-    animation: bg 10s ease infinite;
+    background: linear-gradient(to right, red, blue);
     color: white;
 }
 
-@keyframes bg {
-    0% {background-position: 0% 50%;}
-    50% {background-position: 100% 50%;}
-    100% {background-position: 0% 50%;}
-}
-
-h1, p, h2 {
+h1, p, h2, h3 {
     text-shadow: 2px 2px 5px black;
 }
 
@@ -32,55 +23,133 @@ input {
     padding: 10px;
     border-radius: 8px;
     border: none;
-    outline: none;
+    margin: 5px;
 }
 
 button {
-    padding: 10px 15px;
-    margin-left: 10px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
+  padding: 10px 15px;
+  margin: 5px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(45deg, red, blue);
+  color: white;
 }
 </style>
 </head>
 <body>
 
-    <h1>Ambition Game</h1>
-    <p>Pick a number from 1 to 30</p>
+<h1>Ambition Game 🎮</h1>
 
-    <input type="number" id="num" min="1" max="30">
-    <button onclick="checkNumber()">Pick</button>
+<input type="text" id="playerName" placeholder="Enter your name">
 
-    <h2 id="result"></h2>
+<p>Pick a number from 1 to 70</p>
 
-    <script>
-        function checkNumber() {
+<input type="number" id="num" min="1" max="70">
+<button onclick="checkNumber()">Pick</button>
+<button onclick="randomPick()">Random 🎲</button>
 
-            let num = document.getElementById("num").value;
-            let result = "";
+<h2 id="result"></h2>
+<p id="luck"></p>
+<p id="score">Score: 0</p>
 
-            switch(num) {
-                case "1": result = "Dustbin packer"; break;
-                case "2": result = "Mad man"; break;
-                case "3": result = "BEGGAR"; break;
-                case "4": result = "ACCOUNTANT"; break;
-                case "5": result = "HOUSE HELP"; break;
-                case "6": result = "TOILET CLEANER"; break;
-                case "7": result = "FISHER MAN"; break;
-                case "8": result = "ASTRONAUT"; break;
-                case "9": result = "SAILOR"; break;
-                case "10": result = "MECHANIC"; break;
-                case "26": result = "PROGRAMMER"; break;
-                case "28": result = "FASHION DESIGNER"; break;
-                case "29": result = "FARMER"; break;
-                case "30": result = "DOCTOR"; break;
-                default: result = "Choose a number from 1 to 30";
-            }
+<h3>🏆 Leaderboard</h3>
+<ul id="leaderboard"></ul>
 
-            document.getElementById("result").innerText = result;
-        }
-    </script>
+<script>
+
+let score = 0;
+let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+
+// 🔥 ALWAYS SAFE NAME
+function getName() {
+    let input = document.getElementById("playerName");
+    if (!input) return "Anonymous";
+
+    let name = input.value.trim();
+    return name ? name : "Anonymous";
+}
+
+const ambitions = {
+    1:"Doctor",2:"Lawyer",3:"Pilot",4:"Astronaut",5:"Programmer",
+    6:"Engineer",7:"Teacher",8:"Scientist",9:"Footballer",10:"Business Owner",
+    11:"Chef",12:"Musician",13:"Actor",14:"Fashion Designer",15:"Journalist",
+    16:"Architect",17:"Nurse",18:"Police Officer",19:"Farmer",20:"Pharmacist",
+    21:"Village Chief",22:"Comedian",23:"Taxi Driver",24:"DJ",25:"YouTuber",
+    26:"Content Creator",27:"Motivational Speaker",28:"Game Developer",
+    29:"Cyber Security Expert",30:"Data Analyst",
+    31:"Billionaire",32:"Millionaire",33:"President",34:"Governor",
+    35:"Senator",36:"King",37:"Queen",38:"Inventor",39:"Judge",40:"Professor",
+    41:"Professional Sleeper 😂",42:"Meme Creator 😂",43:"Professional Eater 😂",
+    44:"Dance Champion 😂",45:"Football Referee 😂",
+    46:"Drummer",47:"Photographer",48:"Mechanic",49:"Electrician",50:"Welder",
+    51:"Lazy Person 😴",52:"Internet Troublemaker 😅",53:"Class Noise Maker 😂",
+    54:"Serial Late Comer 😂",55:"Professional Excuse Maker 😂",
+    56:"Market Trader",57:"Fisherman",58:"House Painter",
+    59:"Bricklayer",60:"Plumber",
+    61:"Motorcycle Rider",62:"Security Guard",63:"Bank Manager",
+    64:"Diplomat",65:"Air Force Officer",66:"Navy Officer",
+    67:"Firefighter",68:"Veterinarian",69:"Space Explorer",
+    70:"World Champion"
+};
+
+function checkNumber() {
+    let num = document.getElementById("num").value;
+    let name = getName();
+
+    if (ambitions[num]) {
+
+        document.getElementById("result").innerText =
+            "🔥 " + name + ": " + ambitions[num];
+
+        document.getElementById("luck").innerText =
+            "🎲 Luck: " + Math.floor(Math.random() * 100) + "%";
+
+        score += num > 50 ? 10 : 5;
+        document.getElementById("score").innerText = "Score: " + score;
+
+        updateLeaderboard(name);
+
+    } else {
+        document.getElementById("result").innerText =
+            "Pick 1–70";
+    }
+}
+
+function randomPick() {
+    let num = Math.floor(Math.random() * 70) + 1;
+    document.getElementById("num").value = num;
+    checkNumber();
+}
+
+// 🏆 FIXED LEADERBOARD
+function updateLeaderboard(name) {
+    leaderboard.push({ name: name || "Anonymous", score: score });
+
+    leaderboard.sort((a, b) => b.score - a.score);
+    leaderboard = leaderboard.slice(0, 5);
+
+    localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+    displayLeaderboard();
+}
+
+function displayLeaderboard() {
+    let board = document.getElementById("leaderboard");
+    board.innerHTML = "";
+
+    leaderboard.forEach((player, index) => {
+        let li = document.createElement("li");
+        li.innerText =
+            (index + 1) + ". " +
+            (player.name || "Anonymous") +
+            " - " + player.score;
+        board.appendChild(li);
+    });
+}
+
+displayLeaderboard();
+
+</script>
 
 </body>
 </html>
